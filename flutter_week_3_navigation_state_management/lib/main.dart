@@ -66,7 +66,14 @@ I would tell 'em, "Bring me back to her" (Heaven can wait)
 It's a chance I'll take, maybe I'll stay
 Heaven can wait''',
     );
-
+    final lyrik6 = lagu(
+      judul: 'Billie Jean',
+      penyanyi: 'Michael Jackson',
+    );
+    final lyrik7 = lagu(
+      judul: 'Smooth Criminal',
+      penyanyi: 'Michael Jackson',
+    );
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -84,31 +91,32 @@ Heaven can wait''',
             children: [
               DrawerHeader(
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: Colors.orange,
                 ),
-                child: Text('Menu', style: TextStyle(color: Colors.white, fontSize: 24.0)),
+                child: Text(
+                  'Daftar Lagu',
+                  style: TextStyle(color: Colors.white, fontSize: 24),
+                ),
               ),
               ListTile(
-                leading: Icon(Icons.home),
-                title: Text('Home'),
+                leading: Icon(Icons.music_note),
+                title: Text('${lyrik6.judul}'),
                 onTap: () {
-                  Navigator.pop(context);
+                  print('${lyrik6.judul}');
                 },
               ),
               ListTile(
-                leading: Icon(Icons.info),
-                title: Text('About'),
+                leading: Icon(Icons.music_note),
+                title: Text('${lyrik7.judul}'),
                 onTap: () {
-                  Navigator.pop(context);
-                  showAboutDialog(
-                    context: context,
-                    applicationName: 'Flutter Demo',
-                    applicationVersion: '1.0.0',
-                    applicationIcon: Icon(Icons.flutter_dash),
-                    children: [
-                      Text('This is a demo application for Flutter.'),
-                    ],
-                  );
+                  print('${lyrik7.judul}');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.music_note),
+                title: Text('Daftar Lagu'),
+                onTap: () {
+                  print('Daftar Lagu');
                 },
               ),
             ],
@@ -132,15 +140,15 @@ Heaven can wait''',
         ),
 
       SizedBox(height: 15),
-              Text('${lyrik.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.greenAccent)),
+              Text('${lyrik.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.greenAccent, fontStyle: FontStyle.italic)),
               SizedBox(height: 10),
-              Text('${lyrik2.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.yellowAccent)),
+              Text('${lyrik2.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.yellowAccent, fontStyle: FontStyle.italic)),
               SizedBox(height: 10),
-              Text('${lyrik3.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.blueAccent)),
+              Text('${lyrik3.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.blueAccent, fontStyle: FontStyle.italic)),
               SizedBox(height: 10),
-              Text('${lyrik4.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.purpleAccent)),
+              Text('${lyrik4.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.purpleAccent, fontStyle: FontStyle.italic)),
               SizedBox(height: 10),
-              Text('${lyrik5.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.redAccent)),
+              Text('${lyrik5.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.redAccent, fontStyle: FontStyle.italic)),
             ],
 
           ),
