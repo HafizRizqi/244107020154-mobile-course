@@ -55,17 +55,19 @@ Heaven can wait''',
       home: Scaffold(
         appBar: AppBar(
           title: Text('${lyrik.judul} - ${lyrik.penyanyi}'),
+          centerTitle: true,
+          backgroundColor: Colors.orange,
         ),
         body: Padding (
           padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('${lyrik.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0) ),
+              Text('${lyrik.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.greenAccent)),
               SizedBox(height: 10),
-              Text('${lyrik2.lirik}', textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 14.0)),
+              Text('${lyrik2.lirik}', textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.yellowAccent)),
               SizedBox(height: 10),
-              Text('${lyrik3.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0)),
+              Text('${lyrik3.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.blueAccent)),
 
             ],
 
