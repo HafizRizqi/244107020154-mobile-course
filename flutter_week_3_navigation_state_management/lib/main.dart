@@ -16,7 +16,7 @@ class Hafiz extends StatelessWidget {
     final lyrik = lagu(
       judul: 'Heaven Can\'t Wait',
       penyanyi: 'Michael Jackson',
-      lirik:  '''Tell the Angels no, I don't wanna leave my baby
+      lirik:  '''Tell the Angels no, I don't wanna leave my baby alone,
       That's a chance I'll take, baby I'll stay, Heaven can wait
       No, if the angels took me from this Earth
       I would tell 'em "Bring me back to her"
@@ -103,6 +103,19 @@ Heaven can wait''',
                 title: Text('${lyrik6.judul}'),
                 onTap: () {
                   print('${lyrik6.judul}');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Scaffold(
+                      appBar: AppBar(
+                        title: Text('${lyrik6.judul} - ${lyrik6.penyanyi}'),
+                        centerTitle: true,
+                        backgroundColor: Colors.orange,
+                      ),
+                      body: Center(
+                        child: Text('Lirik lagu ${lyrik6.judul} akan ditampilkan di sini.'),
+                      ),
+                    )),
+                  );
                 },
               ),
               ListTile(
@@ -122,36 +135,137 @@ Heaven can wait''',
             ],
           ),
         ),
-        body: Padding (
-          padding: EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-          child: ClipRRect(
-            child: Image.asset(
-              'assets/images/heaven.png',
-              height: 200,
-              width: 200,
-              fit: BoxFit.cover,
-            ),
-          ),
+        body: SingleChildScrollView(
+          child: Center(
+            child: Container(
+              width: 500,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Hero(
+                    tag: 'heaven-image',
+                    child: Image.asset(
+                      'assets/images/heaven.png',
+                    height: 200,
+                    width: 200,
+                    fit: BoxFit.cover,
+                    ),
+                  ),
+
+                  SizedBox(height: 20),
+                  Text(
+                    '${lyrik.lirik}',
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      letterSpacing: 2,
+                      wordSpacing: 3,
+                      height: 2,
+                      color: Colors.red,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    '${lyrik2.lirik}',
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      letterSpacing: 2,
+                      wordSpacing: 3,
+                      height: 2,
+                      color: Colors.red,
+                    ),
+                  ),
+                  Text(
+                    '${lyrik3.lirik}',
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      letterSpacing: 2,
+                      wordSpacing: 3,
+                      height: 2,
+                      color: Colors.red,
+                    ),
+                  ),
+                  Text(
+                    '${lyrik4.lirik}',
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      letterSpacing: 2,
+                      wordSpacing: 3,
+                      height: 2,
+                      color: Colors.red,
+                    ),
+                  ),
+                  Text(
+                    '${lyrik5.lirik}',
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      letterSpacing: 2,
+                      wordSpacing: 3,
+                      height: 2,
+                      color: Colors.red,
+                    ),
+                  ),
+                  AnimatedContainer(
+                    duration: Duration(seconds: 1),
+                    width: double.infinity,
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                    color: Colors.orangeAccent,
+                    borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      'Masukkan komentar tentang lagu:',
+                    style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                  TextField(
+                    decoration: InputDecoration(
+                    labelText: 'Komentar',
+                    hintText: 'Masukkan komentar...',
+                    border: OutlineInputBorder(),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                    title: Text('Informasi'),
+                    content: Text('Komentar berhasil dikirim!'),
+                    actions: [
+                  TextButton(
+                    onPressed: () {
+                  Navigator.pop(context);
+                    },
+                    child: Text('OK'),
+                      ),
+                    ],
+                );
+              },
+            );
+          },
+          child: Text('Kirim'),
         ),
-
-      SizedBox(height: 15),
-              Text('${lyrik.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.greenAccent, fontStyle: FontStyle.italic)),
-              SizedBox(height: 10),
-              Text('${lyrik2.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.yellowAccent, fontStyle: FontStyle.italic)),
-              SizedBox(height: 10),
-              Text('${lyrik3.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.blueAccent, fontStyle: FontStyle.italic)),
-              SizedBox(height: 10),
-              Text('${lyrik4.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.purpleAccent, fontStyle: FontStyle.italic)),
-              SizedBox(height: 10),
-              Text('${lyrik5.lirik}', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.0, backgroundColor: Colors.redAccent, fontStyle: FontStyle.italic)),
-            ],
-
-          ),
+                AnimatedSwitcher(
+  duration: Duration(seconds: 1),
+  child: Text(
+    'Heaven Can\'t Wait',
+    key: ValueKey('judul'),
+    style: TextStyle(
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+),
+                ],
+              ),
+            ),
           ),
         ),
         bottomNavigationBar: BottomAppBar(
