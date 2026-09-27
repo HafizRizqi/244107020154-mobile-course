@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'mahasiswa.dart';
-import 'Lyrik.dart';
+import 'lagu.dart';
+import 'song_detail_page.dart';
 
 void main() {
   runApp(const Hafiz());
@@ -9,288 +10,330 @@ void main() {
 class Hafiz extends StatelessWidget {
   const Hafiz({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final Mahasiswa mahasiswa = Mahasiswa(nama: 'Hafiz', umur: 20, kelas: 'TI-3C');
-    final lyrik = lagu(
-      judul: 'Heaven Can\'t Wait',
-      penyanyi: 'Michael Jackson',
-      lirik:  '''Tell the Angels no, I don't wanna leave my baby alone,
-      That's a chance I'll take, baby I'll stay, Heaven can wait
-      No, if the angels took me from this Earth
-      I would tell 'em "Bring me back to her"
-      It's a chance I'll take, maybe I'll stay
-      Heaven can wait
-      ... ''',
-    );
-    final lyrik2 = lagu(
-      lirik: '''(You're beautiful, you're wonderful, incredible, I love you so)
-You're beautiful
-Each moment spent with you is simply wonderful
-This love I have for you, girl, it's incredible (Incredible)
-And I don't know what I'd do if I can't be with you
-The world could not go on, so every night I pray
-If the Lord should come for me before I wake
-I wouldn't wanna go if I can't see your face, can't hold you close
-What good would Heaven be?
-If the angels came for me, I'd tell them, "No"'''
-    );
-    final lyrik3 = lagu(
-      lirik: '''No, I don't wanna leave my baby alone
-I don't want nobody else to hold you
-That's the chance I'll take
-Baby, I'll stay, Heaven can wait
-No (No), if the angels took me from this Earth
-I would tell them, "Bring me back to her"
-It's a chance I'll take, maybe I'll stay
-Heaven can wait''',
-    );
-    final lyrik4 = lagu(
-      lirik: '''Unthinkable
-Me sittin' up in the clouds and you are all alone
-The time might come around when you'd be movin' on (Movin' on)
-I'd turn it all around and try to get back down to my baby girl
-Can't stand to see nobody kissin', touchin' her
-Couldn't take nobody lovin' you the way we were
-What good would Heaven be?
-If the angels come for me, I'd tell them, "No"''',
-    );
-    final lyrik5 = lagu(
-      lirik: '''No (Yeah), I don't wanna leave my baby alone (My baby)
-I don't want nobody else to hold you (Don't you do this to me)
-That's a chance I'll take (If the angels come around, just tell 'em to bring me down to my baby)
-Baby, I'll stay, Heaven can wait
-No, if the angels took me from this Earth (Don't you do this to me)
-I would tell 'em, "Bring me back to her" (Heaven can wait)
-It's a chance I'll take, maybe I'll stay
-Heaven can wait''',
-    );
-    final lyrik6 = lagu(
-      judul: 'Billie Jean',
-      penyanyi: 'Michael Jackson',
-    );
-    final lyrik7 = lagu(
-      judul: 'Smooth Criminal',
-      penyanyi: 'Michael Jackson',
-    );
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Daftar Lagu',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('${lyrik.judul} - ${lyrik.penyanyi}'),
-          centerTitle: true,
-          backgroundColor: Colors.orange,
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                ),
-                child: Text(
-                  'Daftar Lagu',
-                  style: TextStyle(color: Colors.white, fontSize: 24),
-                ),
-              ),
-              ListTile(
-                leading: Icon(Icons.music_note),
-                title: Text('${lyrik6.judul}'),
-                onTap: () {
-                  print('${lyrik6.judul}');
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Scaffold(
-                      appBar: AppBar(
-                        title: Text('${lyrik6.judul} - ${lyrik6.penyanyi}'),
-                        centerTitle: true,
-                        backgroundColor: Colors.orange,
-                      ),
-                      body: Center(
-                        child: Text('Lirik lagu ${lyrik6.judul} akan ditampilkan di sini.'),
-                      ),
-                    )),
-                  );
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.music_note),
-                title: Text('${lyrik7.judul}'),
-                onTap: () {
-                  print('${lyrik7.judul}');
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.music_note),
-                title: Text('Daftar Lagu'),
-                onTap: () {
-                  print('Daftar Lagu');
-                },
-              ),
-            ],
-          ),
-        ),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Container(
-              width: 500,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Hero(
-                    tag: 'heaven-image',
-                    child: Image.asset(
-                      'assets/images/heaven.png',
-                    height: 200,
-                    width: 200,
-                    fit: BoxFit.cover,
-                    ),
-                  ),
-
-                  SizedBox(height: 20),
-                  Text(
-                    '${lyrik.lirik}',
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      letterSpacing: 2,
-                      wordSpacing: 3,
-                      height: 2,
-                      color: Colors.red,
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    '${lyrik2.lirik}',
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      letterSpacing: 2,
-                      wordSpacing: 3,
-                      height: 2,
-                      color: Colors.red,
-                    ),
-                  ),
-                  Text(
-                    '${lyrik3.lirik}',
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      letterSpacing: 2,
-                      wordSpacing: 3,
-                      height: 2,
-                      color: Colors.red,
-                    ),
-                  ),
-                  Text(
-                    '${lyrik4.lirik}',
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      letterSpacing: 2,
-                      wordSpacing: 3,
-                      height: 2,
-                      color: Colors.red,
-                    ),
-                  ),
-                  Text(
-                    '${lyrik5.lirik}',
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      letterSpacing: 2,
-                      wordSpacing: 3,
-                      height: 2,
-                      color: Colors.red,
-                    ),
-                  ),
-                  AnimatedContainer(
-                    duration: Duration(seconds: 1),
-                    width: double.infinity,
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                    color: Colors.orangeAccent,
-                    borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      'Masukkan komentar tentang lagu:',
-                    style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                  TextField(
-                    decoration: InputDecoration(
-                    labelText: 'Komentar',
-                    hintText: 'Masukkan komentar...',
-                    border: OutlineInputBorder(),
-                    ),
-                  ),
-
-                  SizedBox(height: 10),
-
-                  ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                    title: Text('Informasi'),
-                    content: Text('Komentar berhasil dikirim!'),
-                    actions: [
-                  TextButton(
-                    onPressed: () {
-                  Navigator.pop(context);
-                    },
-                    child: Text('OK'),
-                      ),
-                    ],
-                );
-              },
-            );
-          },
-          child: Text('Kirim'),
-        ),
-                AnimatedSwitcher(
-  duration: Duration(seconds: 1),
-  child: Text(
-    'Heaven Can\'t Wait',
-    key: ValueKey('judul'),
-    style: TextStyle(
-      fontSize: 24,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
-),
-                ],
-              ),
-            ),
-          ),
-        ),
-        bottomNavigationBar: BottomAppBar(
-          child: Container(
-            height: 25.0,
-            color: Colors.blue,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(width: 5.0),
-                  Icon(Icons.skip_previous, color: Colors.black,),
-                  Icon(Icons.pause, color: Colors.black,),
-                  Icon(Icons.skip_next, color: Colors.black,),
-                  Icon(Icons.volume_up, color: Colors.black,),
-                  Icon(Icons.volume_off, color: Colors.black,),
-                  SizedBox(width: 5.0),
-                  Text('Create by ${mahasiswa.nama}', style: TextStyle(color: Colors.black, fontSize: 12.0)),
-                ],
-              ),
-            ),
-          ),
-      ),
-      ),
+      home: const HomePage(),
     );
   }
 }
 
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final Mahasiswa _mahasiswa = Mahasiswa(nama: 'Hafiz', umur: 20, kelas: 'TI-3C');
+
+  final List<Lagu> _daftarLagu = [
+    Lagu(judul: "Heaven Can't Wait", penyanyi: 'Michael Jackson', genre: 'Pop'),
+    Lagu(judul: 'Billie Jean', penyanyi: 'Michael Jackson', genre: 'Pop'),
+    Lagu(judul: 'Smooth Criminal', penyanyi: 'Michael Jackson', genre: 'Pop'),
+    Lagu(judul: 'Thriller', penyanyi: 'Michael Jackson', genre: 'Pop'),
+  ];
+
+  String _kataKunci = '';
+  String? _genreTerpilih;
+  bool _isPlaying = false;
+
+  List<Lagu> get _lagusFiltered {
+    return _daftarLagu.where((lagu) {
+      final cocokKataKunci = _kataKunci.isEmpty ||
+          lagu.judul.toLowerCase().contains(_kataKunci.toLowerCase()) ||
+          lagu.penyanyi.toLowerCase().contains(_kataKunci.toLowerCase());
+      final cocokGenre = _genreTerpilih == null || lagu.genre == _genreTerpilih;
+      return cocokKataKunci && cocokGenre;
+    }).toList();
+  }
+
+  List<String> get _semuaGenre => _daftarLagu.map((l) => l.genre).toSet().toList();
+
+  void _tambahLaguBaru() {
+    final judulController = TextEditingController();
+    final penyanyiController = TextEditingController();
+    String genreBaru = _semuaGenre.isNotEmpty ? _semuaGenre.first : 'Pop';
+    final formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Tambah Lagu'),
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: judulController,
+                decoration: const InputDecoration(labelText: 'Judul lagu'),
+                validator: (value) =>
+                    (value == null || value.trim().isEmpty) ? 'Judul wajib diisi' : null,
+              ),
+              TextFormField(
+                controller: penyanyiController,
+                decoration: const InputDecoration(labelText: 'Penyanyi'),
+                validator: (value) =>
+                    (value == null || value.trim().isEmpty) ? 'Penyanyi wajib diisi' : null,
+              ),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                value: genreBaru,
+                items: ['Pop', 'Rock', 'Jazz', 'R&B', 'Lainnya']
+                    .map((g) => DropdownMenuItem(value: g, child: Text(g)))
+                    .toList(),
+                onChanged: (value) => genreBaru = value ?? genreBaru,
+                decoration: const InputDecoration(labelText: 'Genre'),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                setState(() {
+                  _daftarLagu.add(Lagu(
+                    judul: judulController.text.trim(),
+                    penyanyi: penyanyiController.text.trim(),
+                    genre: genreBaru,
+                  ));
+                });
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Lagu baru berhasil ditambahkan!')),
+                );
+              }
+            },
+            child: const Text('Simpan'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Daftar Lagu'),
+        centerTitle: true,
+        backgroundColor: Colors.orange,
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(color: Colors.orange),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const CircleAvatar(
+                    radius: 28,
+                    backgroundColor: Colors.white,
+                    child: Icon(Icons.person, size: 32, color: Colors.orange),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    _mahasiswa.nama,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    '${_mahasiswa.kelas} • ${_mahasiswa.umur} tahun',
+                    style: const TextStyle(color: Colors.white70, fontSize: 13),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: const Text('Tentang Aplikasi'),
+              onTap: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            // SearchBar
+            child: SearchBar(
+              hintText: 'Cari judul atau penyanyi...',
+              leading: const Icon(Icons.search),
+              onChanged: (value) => setState(() => _kataKunci = value),
+            ),
+          ),
+          SizedBox(
+            height: 44,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              children: [
+                // FilterChip
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: FilterChip(
+                    label: const Text('Semua'),
+                    selected: _genreTerpilih == null,
+                    onSelected: (_) => setState(() => _genreTerpilih = null),
+                  ),
+                ),
+                ..._semuaGenre.map(
+                  (genre) => Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: FilterChip(
+                      label: Text(genre),
+                      selected: _genreTerpilih == genre,
+                      onSelected: (_) => setState(
+                        () => _genreTerpilih = _genreTerpilih == genre ? null : genre,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+          Expanded(
+            child: _lagusFiltered.isEmpty
+                ? const Center(child: Text('Lagu tidak ditemukan.'))
+                : ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    itemCount: _lagusFiltered.length,
+                    itemBuilder: (context, index) {
+                      final lagu = _lagusFiltered[index];
+                      return Dismissible(
+                        // Dismissible
+                        key: ValueKey(lagu.judul),
+                        direction: DismissDirection.endToStart,
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 20),
+                          margin: const EdgeInsets.symmetric(vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.redAccent,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.delete, color: Colors.white),
+                        ),
+                        onDismissed: (_) {
+                          setState(() => _daftarLagu.remove(lagu));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('${lagu.judul} dihapus dari daftar.')),
+                          );
+                        },
+                        child: Card(
+                          margin: const EdgeInsets.symmetric(vertical: 6),
+                          child: InkWell(
+                            // InkWell
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SongDetailPage(
+                                    lagu: lagu,
+                                    onFavoriteChanged: (_) => setState(() {}),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Row(
+                                children: [
+                                  Hero(
+                                    tag: 'cover-${lagu.judul}',
+                                    child: CircleAvatar(
+                                      radius: 26,
+                                      backgroundColor: Colors.deepPurple.shade50,
+                                      child: const Icon(Icons.music_note, color: Colors.deepPurple),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          lagu.judul,
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          lagu.penyanyi,
+                                          style: TextStyle(color: Colors.grey[600]),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  if (lagu.favorit)
+                                    // Badge
+                                    const Badge(
+                                      label: Text('♥'),
+                                      backgroundColor: Colors.redAccent,
+                                    )
+                                  else
+                                    const Icon(Icons.chevron_right, color: Colors.grey),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _tambahLaguBaru,
+        backgroundColor: Colors.orange,
+        child: const Icon(Icons.add),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.blue,
+        child: SizedBox(
+          height: 40,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Icon(Icons.skip_previous, color: Colors.white),
+              IconButton(
+                icon: Icon(
+                  _isPlaying ? Icons.pause : Icons.play_arrow,
+                  color: Colors.white,
+                ),
+                onPressed: () => setState(() => _isPlaying = !_isPlaying),
+              ),
+              const Icon(Icons.skip_next, color: Colors.white),
+              const Icon(Icons.volume_up, color: Colors.white),
+              Text(
+                'Dibuat oleh ${_mahasiswa.nama}',
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
