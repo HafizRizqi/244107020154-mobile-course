@@ -2,6 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
  
 import '../data/local/note.dart';
 import '../data/repositories/note_repository.dart';
+import '../data/sync.dart';
+import 'offline_providers.dart';
+
  
 final noteRepositoryProvider =
     Provider<NoteRepository>((ref) => NoteRepository());
@@ -24,6 +27,14 @@ class NoteActions {
   final Ref _ref;
  
   NoteRepository get _repo => _ref.read(noteRepositoryProvider);
+
+  Future<int> sync() async {
+    final offline = _ref.read(forceOfflineProvider);
+    final count = await syncNotes(_repo, offline: offline);
+    _refresh();
+    return count;
+  }
+
  
   Future<void> add(String title, String body) async {
     await _repo.addNote(title: title, body: body);
