@@ -1,12 +1,9 @@
 
-import 'dart:io' show Platform;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../messaging/push_service.dart';
 
-/// Status konfigurasi FCM.
 final firebaseReadyProvider = Provider<bool>((ref) => false);
 
 enum PushStatus {
@@ -22,15 +19,13 @@ final pushSetupProvider = FutureProvider<PushStatus>((ref) async {
 
   final granted = await requestNotificationPermission();
 
-  if (!granted) {
-    return PushStatus.permissionDenied;
-  }
+  if (!granted) return PushStatus.permissionDenied;
 
   await initFcmToken(
     onToken: (token) async {
-      // Pengujian FCM tanpa backend API.
-      debugPrint('FCM Token: $token');
-      debugPrint('Platform: ${Platform.isIOS ? 'ios' : 'android'}');
+      // Token tidak dikirim ke backend contoh.
+      // Firebase Messaging tetap mengelola token perangkat.
+      debugPrint('[FCM] Token siap: ${maskToken(token)}');
     },
   );
 

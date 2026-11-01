@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -17,30 +18,34 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   bool _subscribed = true;
-  String? _apiMessage;
 
   Future<void> _toggleTopic(bool value) async {
     try {
-      value ? await subscribeTopic() : await unsubscribeTopic();
+      if (value) {
+        await subscribeTopic();
+      } else {
+        await unsubscribeTopic();
+      }
+
+      if (!mounted) return;
+
       setState(() => _subscribed = value);
+      _snack(
+        value
+            ? 'Berhasil berlangganan pengumuman.'
+            : 'Berhasil berhenti berlangganan.',
+      );
     } catch (e) {
-      _snack('Gagal ubah langganan: ${friendlyErrorMessage(e)}');
+      if (!mounted) return;
+      _snack('Gagal mengubah langganan: ${friendlyErrorMessage(e)}');
     }
   }
 
-  Future<void> _callApi() async {
-    setState(() => _apiMessage = 'Memanggil API...');
-    try {
-      await ref.read(apiClientProvider).get('/announcements');
-      setState(() => _apiMessage = 'Berhasil');
-    } catch (e) {
-      // UI hanya menerima pesan ramah, bukan exception mentah.
-      setState(() => _apiMessage = friendlyErrorMessage(e));
-    }
+  void _snack(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(text)),
+    );
   }
-
-  void _snack(String text) => ScaffoldMessenger.of(context)
-      .showSnackBar(SnackBar(content: Text(text)));
 
   @override
   Widget build(BuildContext context) {
@@ -54,70 +59,94 @@ class _HomePageState extends ConsumerState<HomePage> {
           IconButton(
             tooltip: 'Keluar',
             icon: const Icon(Icons.logout),
-            onPressed: () => ref.read(authStateProvider.notifier).logout(),
+            onPressed: () async {
+              await ref.read(authStateProvider.notifier).logout();
+            },
           ),
         ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          Text(
+            'Daftar Pengumuman',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+
+          // Data sementara. Tahap berikutnya akan menggunakan Firestore.
           for (final id in ['1', '2', '3'])
             Card(
               child: ListTile(
                 leading: const Icon(Icons.campaign_outlined),
                 title: Text('Pengumuman #$id'),
+                subtitle: const Text('Contoh pengumuman'),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push(Routes.announcementOf(id)),
+                onTap: () => context.push(
+                  Routes.announcementOf(id),
+                ),
               ),
             ),
+
           const SizedBox(height: 16),
-          Text('Debug', style: Theme.of(context).textTheme.titleMedium),
+
+          Text(
+            'Pengaturan FCM',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           Card(
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Status FCM: ${push.when(
-                    data: (s) => switch (s) {
-                      PushStatus.ready => 'siap',
-                      PushStatus.permissionDenied => 'izin notifikasi ditolak',
-                      PushStatus.firebaseNotConfigured =>
-                        'Firebase belum dikonfigurasi',
-                    },
-                    loading: () => 'menyiapkan...',
-                    error: (e, _) => 'gagal: ${friendlyErrorMessage(e)}',
-                  )}'),
-                  const SizedBox(height: 4),
-                  // Token ditampilkan terpotong: jangan pernah tampil penuh.
+                  Text(
+                    'Status FCM: ${push.when(
+                      data: (status) => switch (status) {
+                        PushStatus.ready => 'siap',
+                        PushStatus.permissionDenied =>
+                          'izin notifikasi ditolak',
+                        PushStatus.firebaseNotConfigured =>
+                          'Firebase belum dikonfigurasi',
+                      },
+                      loading: () => 'menyiapkan...',
+                      error: (error, _) =>
+                          'gagal: ${friendlyErrorMessage(error)}',
+                    )}',
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Token hanya ditampilkan dalam bentuk tersamarkan.
                   ValueListenableBuilder<String?>(
                     valueListenable: latestFcmToken,
-                    builder: (_, token, _) =>
-                        Text('FCM token: ${maskToken(token)}'),
+                    builder: (context, token, _) {
+                      return Text(
+                        'FCM token: ${maskToken(token)}',
+                      );
+                    },
                   ),
+
+                  const SizedBox(height: 8),
+
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: const Text('Topik $topicPengumuman'),
+                    title: const Text(
+                      'Topik $topicPengumuman',
+                    ),
+                    subtitle: const Text(
+                      'Menerima pesan yang dikirim ke topik ini.',
+                    ),
                     value: _subscribed,
                     onChanged: ready ? _toggleTopic : null,
                   ),
-                  Wrap(
-                    spacing: 8,
-                    children: [
-                      OutlinedButton(
-                        onPressed: () => ref.invalidate(pushSetupProvider),
-                        child: const Text('Ulangi setup FCM'),
-                      ),
-                      OutlinedButton(
-                        onPressed: _callApi,
-                        child: const Text('Tes API (401/offline)'),
-                      ),
-                    ],
+
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      ref.invalidate(pushSetupProvider);
+                    },
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Ulangi setup FCM'),
                   ),
-                  if (_apiMessage != null) ...[
-                    const SizedBox(height: 4),
-                    Text('API: $_apiMessage'),
-                  ],
                 ],
               ),
             ),

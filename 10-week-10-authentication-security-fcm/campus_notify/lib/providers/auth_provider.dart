@@ -1,48 +1,57 @@
-import 'package:dio/dio.dart';
+
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/api_client.dart';
 import '../data/auth_repository.dart';
-import '../data/token_store.dart';
 
-final tokenStoreProvider = Provider<TokenStore>((ref) => TokenStore());
-
-final authRepositoryProvider =
-    Provider<AuthRepository>((ref) => AuthRepository());
-
-final apiClientProvider = Provider<Dio>((ref) {
-  return buildApiClient(
-    ref.watch(tokenStoreProvider),
-    ref.watch(authRepositoryProvider),
-    onSessionExpired: () => ref.invalidate(authStateProvider),
-  );
-});
+final authRepositoryProvider = Provider<AuthRepository>(
+  (ref) => AuthRepository(),
+);
 
 final authStateProvider =
     AsyncNotifierProvider<AuthNotifier, bool>(AuthNotifier.new);
 
 class AuthNotifier extends AsyncNotifier<bool> {
+  StreamSubscription<User?>? _authSubscription;
+
   @override
   Future<bool> build() async {
-    final token = await ref.watch(tokenStoreProvider).readAccess();
-    return token != null;
+    final auth = FirebaseAuth.instance;
+
+    // Ikuti perubahan login/logout dari Firebase.
+    _authSubscription?.cancel();
+    _authSubscription = auth.authStateChanges().listen((user) {
+      state = AsyncData(user != null);
+    });
+
+    ref.onDispose(() {
+      _authSubscription?.cancel();
+    });
+
+    return auth.currentUser != null;
   }
 
   Future<void> login(String email, String password) async {
     state = const AsyncLoading();
+
     state = await AsyncValue.guard(() async {
-      final session = await ref
-          .read(authRepositoryProvider)
-          .login(email: email, password: password);
-      await ref
-          .read(tokenStoreProvider)
-          .save(access: session.access, refresh: session.refresh);
-      return true;
+      await ref.read(authRepositoryProvider).login(
+            email: email,
+            password: password,
+          );
+
+      return FirebaseAuth.instance.currentUser != null;
     });
   }
 
   Future<void> logout() async {
-    await ref.read(tokenStoreProvider).clear();
-    ref.invalidateSelf();
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(() async {
+      await ref.read(authRepositoryProvider).logout();
+      return false;
+    });
   }
 }

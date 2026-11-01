@@ -1,29 +1,46 @@
-class AuthSession {
-  const AuthSession({required this.access, required this.refresh});
-  final String access;
-  final String refresh;
-}
+
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthRepository {
-  // GANTI titik ini dengan FirebaseAuth.instance.signInWithEmailAndPassword
-  // atau GoogleSignIn saat backend Firebase sudah siap.
-  Future<AuthSession> login(
-      {required String email, required String password}) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    if (!email.contains('@') || password.length < 6) {
-      throw Exception('Email atau kata sandi tidak valid');
+  AuthRepository({FirebaseAuth? firebaseAuth})
+      : _auth = firebaseAuth ?? FirebaseAuth.instance;
+
+  final FirebaseAuth _auth;
+
+  Future<void> login({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: email.trim(),
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_message(e.code));
     }
-    // Simulasi JWT: header.payload.signature (jangan parse manual di produksi,
-    // gunakan verifikasi server).
-    return AuthSession(
-      access: 'mock-access-for-$email',
-      refresh: 'mock-refresh-for-$email',
-    );
   }
 
-  Future<String> refresh(String refreshToken) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    if (refreshToken.isEmpty) throw Exception('Refresh token hilang');
-    return 'mock-access-renewed-${DateTime.now().millisecondsSinceEpoch}';
+  Future<void> logout() async {
+    await _auth.signOut();
+  }
+
+  String _message(String code) {
+    switch (code) {
+      case 'invalid-email':
+        return 'Format email tidak valid.';
+      case 'user-not-found':
+      case 'invalid-credential':
+      case 'wrong-password':
+        return 'Email atau kata sandi salah.';
+      case 'user-disabled':
+        return 'Akun ini telah dinonaktifkan.';
+      case 'too-many-requests':
+        return 'Terlalu banyak percobaan. Coba lagi nanti.';
+      case 'network-request-failed':
+        return 'Periksa koneksi internet kamu.';
+      default:
+        return 'Login gagal. Kode: $code';
+    }
   }
 }
