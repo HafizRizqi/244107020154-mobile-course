@@ -1,13 +1,13 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../data/api_errors.dart';
 import '../messaging/push_service.dart';
-import '../providers/auth_provider.dart';
-import '../providers/push_provider.dart';
 import '../providers/announcement_provider.dart';
+import '../providers/auth_provider.dart';
+import '../providers/notification_provider.dart';
+import '../providers/push_provider.dart';
 import '../routes.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -77,17 +77,39 @@ class _HomePageState extends ConsumerState<HomePage> {
       appBar: AppBar(
         title: const Text('Pengumuman Kampus'),
         actions: [
+          Consumer(
+            builder: (context, ref, _) {
+              final unread = ref.watch(unreadNotificationCountProvider);
+
+              return IconButton(
+                tooltip: 'Notifikasi',
+                onPressed: () {
+                  context.push(Routes.notifications);
+                },
+                icon: unread.when(
+                  loading: () => const Icon(Icons.notifications_outlined),
+                  error: (_, _) => const Icon(Icons.notifications_outlined),
+                  data: (count) => Badge(
+                    isLabelVisible: count > 0,
+                    label: Text(
+                      count > 99 ? '99+' : '$count',
+                    ),
+                    child: const Icon(
+                      Icons.notifications_outlined,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
           IconButton(
             tooltip: 'Keluar',
             icon: const Icon(Icons.logout),
             onPressed: () async {
               try {
-                await ref
-                    .read(authStateProvider.notifier)
-                    .logout();
+                await ref.read(authStateProvider.notifier).logout();
               } catch (e) {
-                if (!mounted) return;
-
+                if (!context.mounted) return;
                 _snack(
                   'Gagal logout: ${friendlyErrorMessage(e)}',
                 );
@@ -180,8 +202,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   return Card(
                     margin: const EdgeInsets.only(bottom: 10),
                     child: ListTile(
-                      contentPadding:
-                          const EdgeInsets.all(12),
+                      contentPadding: const EdgeInsets.all(12),
                       leading: const CircleAvatar(
                         child: Icon(
                           Icons.campaign_outlined,
@@ -194,11 +215,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ),
                       ),
                       subtitle: Padding(
-                        padding:
-                            const EdgeInsets.only(top: 6),
+                        padding: const EdgeInsets.only(top: 6),
                         child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               item.content,
@@ -208,9 +227,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             const SizedBox(height: 6),
                             Text(
                               _formatDate(item.createdAt),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall,
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
                         ),
@@ -242,8 +259,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Status FCM: ${push.when(
@@ -283,17 +299,33 @@ class _HomePageState extends ConsumerState<HomePage> {
                       'ke topik ini.',
                     ),
                     value: _subscribed,
-                    onChanged: ready
-                        ? _toggleTopic
-                        : null,
+                    onChanged: ready ? _toggleTopic : null,
                   ),
 
-                  OutlinedButton.icon(
-                    onPressed: () {
-                      ref.invalidate(pushSetupProvider);
-                    },
-                    icon: const Icon(Icons.refresh),
-                    label: const Text('Ulangi setup FCM'),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          ref.invalidate(pushSetupProvider);
+                        },
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Ulangi setup FCM'),
+                      ),
+                      FilledButton.tonalIcon(
+                        onPressed: () async {
+                          await showCustomNotification(
+                            id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+                            title: 'Tes Suara Kampus',
+                            body: 'Bunyi notifikasi bell_small.wav aktif!',
+                            payload: Routes.notifications,
+                          );
+                        },
+                        icon: const Icon(Icons.volume_up),
+                        label: const Text('Tes Suara Notifikasi'),
+                      ),
+                    ],
                   ),
                 ],
               ),

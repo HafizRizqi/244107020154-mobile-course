@@ -7,6 +7,7 @@ import 'messaging/push_service.dart';
 import 'pages/announcement_page.dart';
 import 'pages/home_page.dart';
 import 'pages/login_page.dart';
+import 'pages/notifications_page.dart';
 import 'providers/auth_provider.dart';
 import 'providers/push_provider.dart';
 import 'routes.dart';
@@ -18,20 +19,18 @@ Future<void> main() async {
   try {
     await Firebase.initializeApp();
     registerBackgroundHandler();
-
-    // Tambahan dari kode teman Anda agar izin notifikasi & token FCM
-    // langsung aktif saat aplikasi dijalankan:
-    await requestNotificationPermission();
-    await initLocalNotifications();
-    await initFcmToken(
-      onToken: (token) async {
-        debugPrint('FCM Token Lengkap: $token');
-      },
-    );
-
     firebaseReady = true;
   } catch (e) {
     debugPrint('[Firebase] belum dikonfigurasi, FCM dinonaktifkan: $e');
+  }
+
+  if (firebaseReady) {
+    try {
+      await initLocalNotifications();
+      await requestNotificationPermission();
+    } catch (e) {
+      debugPrint('[Notification] setup awal local notification: $e');
+    }
   }
 
   final container = ProviderContainer(
@@ -39,14 +38,25 @@ Future<void> main() async {
   );
   final router = buildRouter(container);
 
-  runApp(UncontrolledProviderScope(
-    container: container,
-    child: CampusNotifyApp(router: router),
-  ));
+  runApp(
+    UncontrolledProviderScope(
+      container: container,
+      child: CampusNotifyApp(router: router),
+    ),
+  );
 
   if (firebaseReady) {
     listenForeground(router.go);
     await handleTerminated(router.go);
+    try {
+      await initFcmToken(
+        onToken: (token) async {
+          debugPrint('FCM Token Lengkap: $token');
+        },
+      );
+    } catch (e) {
+      debugPrint('[FCM] setup token awal: $e');
+    }
   }
 }
 
@@ -73,6 +83,10 @@ GoRouter buildRouter(ProviderContainer container) {
       GoRoute(
         path: Routes.announcement,
         builder: (_, s) => AnnouncementPage(id: s.pathParameters['id'] ?? ''),
+      ),
+      GoRoute(
+        path: Routes.notifications,
+        builder: (_, _) => const NotificationsPage(),
       ),
     ],
   );

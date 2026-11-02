@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/announcement.dart';
@@ -13,12 +12,19 @@ class AnnouncementRepository {
     return _firestore
         .collection('announcements')
         .where('isPublished', isEqualTo: true)
-        .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs
+      final list = snapshot.docs
           .map(Announcement.fromFirestore)
           .toList();
+
+      list.sort((a, b) {
+        final aDate = a.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+        final bDate = b.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+        return bDate.compareTo(aDate);
+      });
+
+      return list;
     });
   }
 
@@ -32,7 +38,6 @@ class AnnouncementRepository {
 
       final announcement = Announcement.fromFirestore(doc);
 
-      // Dokumen draft tidak ditampilkan pada halaman detail.
       if (!announcement.isPublished) return null;
 
       return announcement;

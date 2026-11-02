@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Announcement {
@@ -20,16 +19,30 @@ class Announcement {
     DocumentSnapshot<Map<String, dynamic>> doc,
   ) {
     final data = doc.data() ?? <String, dynamic>{};
-    final timestamp = data['createdAt'];
+    final rawCreatedAt = data['createdAt'];
+
+    DateTime? parsedDate;
+    if (rawCreatedAt is Timestamp) {
+      parsedDate = rawCreatedAt.toDate();
+    } else if (rawCreatedAt is String) {
+      parsedDate = DateTime.tryParse(rawCreatedAt);
+    }
+
+    final rawTitle = (data['title'] as String?)?.trim();
+    final rawContent =
+        (data['content'] as String?) ?? (data['body'] as String?) ?? '';
 
     return Announcement(
       id: doc.id,
-      title: data['title'] as String? ?? 'Tanpa judul',
-      content: data['content'] as String? ?? '',
-      createdAt: timestamp is Timestamp
-          ? timestamp.toDate()
-          : null,
-      isPublished: data['isPublished'] as bool? ?? false,
+      title: (rawTitle != null && rawTitle.isNotEmpty)
+          ? rawTitle
+          : 'Tanpa judul',
+      content: rawContent,
+      createdAt: parsedDate,
+      // Default true jika dibuat manual di Firestore tanpa field isPublished
+      isPublished: data['isPublished'] is bool
+          ? data['isPublished'] as bool
+          : true,
     );
   }
 }

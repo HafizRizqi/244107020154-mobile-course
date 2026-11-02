@@ -1,18 +1,39 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../providers/announcement_provider.dart';
+import '../providers/notification_provider.dart';
 import '../routes.dart';
 
-class AnnouncementPage extends ConsumerWidget {
+class AnnouncementPage extends ConsumerStatefulWidget {
   const AnnouncementPage({
     super.key,
     required this.id,
   });
 
   final String id;
+
+  @override
+  ConsumerState<AnnouncementPage> createState() => _AnnouncementPageState();
+}
+
+class _AnnouncementPageState extends ConsumerState<AnnouncementPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Saat detail pengumuman dibuka/dibaca, tandai notifikasi terkait sebagai sudah dibaca
+    // agar hilang dari daftar notifikasi dan ikon lonceng.
+    if (widget.id.isNotEmpty) {
+      Future.microtask(() {
+        if (!mounted) return;
+        ref.read(notificationRepositoryProvider).markAsRead(
+              widget.id,
+              announcementId: widget.id,
+            );
+      });
+    }
+  }
 
   String _formatDate(DateTime? date) {
     if (date == null) {
@@ -26,9 +47,9 @@ class AnnouncementPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final announcement = ref.watch(
-      announcementDetailProvider(id),
+      announcementDetailProvider(widget.id),
     );
 
     return Scaffold(
@@ -73,7 +94,7 @@ class AnnouncementPage extends ConsumerWidget {
                 ElevatedButton.icon(
                   onPressed: () {
                     ref.invalidate(
-                      announcementDetailProvider(id),
+                      announcementDetailProvider(widget.id),
                     );
                   },
                   icon: const Icon(Icons.refresh),
